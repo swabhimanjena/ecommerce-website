@@ -1,0 +1,340 @@
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swabhiman's Shop</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d0d0d;
+      --surface: #161616;
+      --card: #1c1c1c;
+      --border: rgba(255,255,255,0.07);
+      --accent: #f0b429;
+      --accent2: #e07b39;
+      --text: #f0ede6;
+      --muted: #888;
+      --nav-h: 72px;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ─── NAVBAR ─── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      height: var(--nav-h);
+      background: rgba(13,13,13,0.85);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 60px;
+    }
+
+    .nav-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px; font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+      display: flex; align-items: center; gap: 10px;
+    }
+
+    .nav-brand span {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+      display: flex; align-items: center; gap: 6px;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 14px; font-weight: 500;
+      padding: 8px 16px;
+      border-radius: 40px;
+      transition: all 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); background: rgba(255,255,255,0.06); }
+
+    .nav-links .btn-cart {
+      background: var(--accent);
+      color: #0d0d0d;
+      font-weight: 600;
+      padding: 8px 20px;
+      border-radius: 40px;
+    }
+
+    .nav-links .btn-cart:hover { background: #e6a91a; color: #0d0d0d; }
+
+    .nav-greeting {
+      font-size: 13px; color: var(--muted);
+      padding: 8px 14px;
+      border: 1px solid var(--border);
+      border-radius: 40px;
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      text-align: center;
+      padding: 80px 40px 60px;
+    }
+
+    .hero-eyebrow {
+      display: inline-block;
+      font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid rgba(240,180,41,0.3);
+      padding: 6px 18px; border-radius: 40px;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(36px, 6vw, 72px);
+      line-height: 1.1;
+      letter-spacing: -1px;
+      color: var(--text);
+      margin-bottom: 16px;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 16px; color: var(--muted);
+      max-width: 400px; margin: 0 auto;
+    }
+
+    /* ─── DIVIDER ─── */
+    .section-label {
+      display: flex; align-items: center; gap: 16px;
+      padding: 0 60px 32px;
+    }
+
+    .section-label span {
+      font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1; height: 1px;
+      background: var(--border);
+    }
+
+    /* ─── PRODUCT GRID ─── */
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+      padding: 0 60px 80px;
+    }
+
+    .product-card {
+      background: #ffffff;
+      border: 1px solid #e8e8e8;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+    }
+
+    .product-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(240,180,41,0.25);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    }
+
+    .card-img-wrap {
+      height: 200px;
+      background: #f8f8f8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      border-radius: 12px 12px 0 0;
+    }
+
+    .card-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      mix-blend-mode: multiply;
+    }
+
+    .product-card:hover .card-img-wrap img {
+      transform: scale(1.06);
+    }
+
+    .card-badge {
+      position: absolute; top: 14px; left: 14px;
+      background: rgba(13,13,13,0.75);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-size: 11px; font-weight: 500;
+      padding: 4px 12px;
+      border-radius: 40px;
+    }
+
+    .card-body {
+      padding: 20px 22px 22px;
+    }
+
+    .card-body h2 {
+      color: #212121;             /* ← dark text for light card */
+      font-size: 14px;
+      font-weight: 400;
+    }
+
+    .card-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 16px;
+    }
+
+    .price {
+      color: #212121;             /* ← dark price text */
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .price span {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px; font-weight: 400;
+      color: var(--muted);
+      margin-right: 2px;
+    }
+
+    .btn-add {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: var(--accent);
+      color: #0d0d0d;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px; font-weight: 600;
+      padding: 10px 18px;
+      border: none; border-radius: 40px;
+      cursor: pointer; text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-add:hover {
+      background: #e6a91a;
+      transform: scale(1.03);
+    }
+
+    .btn-add svg { width: 14px; height: 14px; }
+
+    /* ─── EMPTY STATE ─── */
+    .empty {
+      text-align: center; padding: 80px 40px;
+      color: var(--muted);
+    }
+
+    .empty-icon {
+      font-size: 64px; margin-bottom: 16px;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 13px; color: var(--muted);
+    }
+
+    footer strong {
+      color: var(--text);
+      font-family: 'Playfair Display', serif;
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 0 20px; }
+      .products { padding: 0 20px 60px; grid-template-columns: 1fr; }
+      .section-label { padding: 0 20px 24px; }
+      footer { padding: 24px 20px; flex-direction: column; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <a href="{% url 'home' %}" class="nav-brand">
+    🛍️ <span>Swabhiman's</span>
+  </a>
+  <div class="nav-links">
+    <a href="{% url 'home' %}">Home</a>
+    <a href="{% url 'cart' %}" class="btn-cart">
+      🛒 Cart
+    </a>
+    {% if user.is_authenticated %}
+      <span class="nav-greeting">👋 {{ user.username }}</span>
+      <a href="{% url 'logout' %}">Logout</a>
+    {% else %}
+      <a href="{% url 'login' %}">Login</a>
+      <a href="{% url 'signup' %}">Sign Up</a>
+    {% endif %}
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">What You Want?</div>
+  <h1>Shop for your <br>Healthy Health</h1>
+  <p>Curated products, unmatched quality. Discover what's waiting for you.</p>
+</section>
+
+<!-- PRODUCTS -->
+<div class="section-label">
+  <span>All Products</span>
+</div>
+
+<div class="products">
+  {% for product in products %}
+  <div class="product-card">
+    <div class="card-img-wrap">
+      <img src="{{ product.image.url }}" alt="{{ product.name }}">
+      <div class="card-badge">In Stock</div>
+    </div>
+    <div class="card-body">
+      <h2>{{ product.name }}</h2>
+      <div class="card-footer">
+        <div class="price"><span>₹</span>{{ product.price }}</div>
+        <a href="{% url 'add_to_cart' product.id %}" class="btn-add">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+          Add to Cart
+        </a>
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <div class="empty" style="grid-column:1/-1">
+    <div class="empty-icon">🏪</div>
+    <p>No products available yet. Check back soon!</p>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <strong>Swabhiman's Shop</strong>
+  <span>© 2025 · All rights reserved</span>
+</footer>
+
+</body>
+</html>
