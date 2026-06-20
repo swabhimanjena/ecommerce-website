@@ -1,1 +1,40 @@
+# Full Stack E-Commerce Website
 
+A full-stack e-commerce web application built using Python and Django.
+
+## Features
+
+* User authentication (Login / Register)
+* Product catalog
+* Product images
+* Shopping cart
+* Database integration
+* Responsive UI
+
+## Tech Stack
+
+* Python
+* Django
+* HTML
+* CSS
+* JavaScript
+* SQLite
+
+## Installation
+
+```bash
+git clone https://github.com/swabhimanjena/ecommerce-website.git
+cd ecommerce-website
+pip install -r requirements.txt
+python manage.py runserver
+```
+
+## Project Structure
+
+* ecommerce/ → Django project settings
+* shop/ → Main application
+* media/ → Product images
+
+## Author
+
+Swabhiman Jena
